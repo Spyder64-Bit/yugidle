@@ -1,0 +1,8 @@
+# Cloudflare Pages config (used by `wrangler pages dev` and Pages deployments).
+name = "yugidle"
+pages_build_output_dir = "dist"
+compatibility_date = "2026-11-01"
+
+[[r2_buckets]]
+binding = "IMAGES"
+bucket_name = "yugidle-images"
