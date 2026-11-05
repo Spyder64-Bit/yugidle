@@ -2,7 +2,7 @@
 
 [![License: MIT](https://img.shields.io/badge/code-MIT-yellow.svg)](LICENSE) ![Open source](https://img.shields.io/badge/open%20source-%E2%9D%A4-e8459a) ![No tracking](https://img.shields.io/badge/tracking-none-2bd47d) [![Ko-fi](https://img.shields.io/badge/Ko--fi-support%20me-ff5e5b?logo=ko-fi&logoColor=white)](https://ko-fi.com/spyder64)
 
-**▶ Play now: [yugidle.pages.dev](https://yugidle.pages.dev)**
+**▶ Play now: [yugidle-game.pages.dev](https://yugidle-game.pages.dev)**
 
 A free, open-source daily Yu-Gi-Oh! monster guessing game in the style of Wordle, with three modes:
 

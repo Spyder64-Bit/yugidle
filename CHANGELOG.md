@@ -8,7 +8,7 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 Public launch on Cloudflare Pages.
 
 ### Added
-- **Live site:** [yugidle.pages.dev](https://yugidle.pages.dev), with artwork served from Cloudflare R2.
+- **Live site:** [yugidle-game.pages.dev](https://yugidle-game.pages.dev), with artwork served from Cloudflare R2.
 - **Sharing:** shared results end with the site address; absolute Open Graph/Twitter preview image, `og:url` and a canonical link for proper link previews.
 - **Security and caching headers** (`public/_headers`): strict same-origin Content Security Policy, frame denial, immutable caching for hashed bundles, short revalidated caching for weekly data.
 - **Ko-fi:** an optional "Support me on Ko-fi" link in the footer (a plain link with no third-party script), a README badge and a GitHub Sponsor button.
