@@ -6,3 +6,11 @@ compatibility_date = "2026-11-01"
 [[r2_buckets]]
 binding = "IMAGES"
 bucket_name = "yugidle-images"
+
+# Global leaderboard (opt-in). Schema in migrations/; apply with
+#   npx wrangler d1 migrations apply yugidle --remote
+[[d1_databases]]
+binding = "DB"
+database_name = "yugidle"
+database_id = "b1d0273a-f366-4913-b7da-2e542a8a22ba"
+migrations_dir = "migrations"
