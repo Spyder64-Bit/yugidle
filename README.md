@@ -1,6 +1,8 @@
 # Yugidle
 
-[![License: MIT](https://img.shields.io/badge/code-MIT-yellow.svg)](LICENSE) ![Open source](https://img.shields.io/badge/open%20source-%E2%9D%A4-e8459a) ![No tracking](https://img.shields.io/badge/tracking-none-2bd47d)
+[![License: MIT](https://img.shields.io/badge/code-MIT-yellow.svg)](LICENSE) ![Open source](https://img.shields.io/badge/open%20source-%E2%9D%A4-e8459a) ![No tracking](https://img.shields.io/badge/tracking-none-2bd47d) [![Ko-fi](https://img.shields.io/badge/Ko--fi-support%20me-ff5e5b?logo=ko-fi&logoColor=white)](https://ko-fi.com/spyder64)
+
+**▶ Play now: [yugidle.pages.dev](https://yugidle.pages.dev)**
 
 A free, open-source daily Yu-Gi-Oh! monster guessing game in the style of Wordle, with three modes:
 
@@ -41,11 +43,24 @@ Tiers are ranked by YGOPRODeck view counts (Easy = top 300, Normal = top 2,000, 
 
 ## Deployment ($0)
 
-1. **GitHub**: push this repo. `refresh-data.yml` runs every Monday: it rebuilds data, extends the schedule, uploads new art to R2 and commits.
-2. **Cloudflare R2**: create bucket `yugidle-images`. Create an R2 API token (Object Read & Write) and add GitHub secrets `R2_ACCOUNT_ID`, `R2_ACCESS_KEY_ID`, `R2_SECRET_ACCESS_KEY`, `R2_BUCKET=yugidle-images`.
-3. **First image upload** (from your machine, with the same env vars): `npm run images -- --upload`.
-4. **Cloudflare Pages**: create a project from the GitHub repo with build command `npm run build` and output directory `dist`. `wrangler.toml` binds the bucket as `IMAGES` for `functions/img/[[path]].ts`, which serves `/img/art/*`.
-5. Optional: add a custom domain in Pages. If you do, you can also give R2 a custom domain and drop the function.
+Hosting is Cloudflare Pages (site + one Pages Function) and Cloudflare R2 (full artwork), both on the free tier.
+
+1. **Log in:** `npx wrangler login`, then `npx wrangler whoami` to read your account ID.
+2. **R2 bucket:** `npx wrangler r2 bucket create yugidle-images` (enable R2 once in the dashboard if asked).
+3. **R2 API token:** dashboard → R2 → *Manage API tokens* → *Object Read & Write*, scoped to `yugidle-images`.
+4. **First image upload** (resumable thanks to the bucket manifest):
+   ```sh
+   R2_ACCOUNT_ID=… R2_ACCESS_KEY_ID=… R2_SECRET_ACCESS_KEY=… R2_BUCKET=yugidle-images npm run images -- --upload
+   ```
+5. **GitHub secrets** for the weekly refresh: `gh secret set R2_ACCOUNT_ID` (and `R2_ACCESS_KEY_ID`, `R2_SECRET_ACCESS_KEY`, `R2_BUCKET`).
+6. **Pages project:** dashboard → Workers & Pages → Create → Pages → *Connect to Git* → this repo. Framework *None*, build command `npm run build`, output `dist`, environment variable `NODE_VERSION=24`. Every push to `main` (including the bot's weekly data commit) deploys automatically. `wrangler.toml` binds the bucket as `IMAGES` for `functions/img/[[path]].ts`, which serves `/img/art/*`; if the binding is missing, add it under Settings → Bindings.
+7. **Local production preview:** `npm run build && npx wrangler pages dev dist`.
+
+`public/_headers` sets the CSP and cache rules. If you deploy under a different address, change `SITE_URL` in `src/lib/config.ts` and the URLs in `index.html`.
+
+## Support
+
+Yugidle is free and stays free. If you enjoy it, you can [buy me a coffee on Ko-fi](https://ko-fi.com/spyder64). Tips support my time and the open-source code; they never buy Yu-Gi-Oh! content or features.
 
 ## License and legal
 
