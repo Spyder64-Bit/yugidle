@@ -4,6 +4,7 @@
   import { compareMonsters } from '../lib/compare.ts';
   import { SITE_URL } from '../lib/config.ts';
   import { dailyAnswer, randomAnswer } from '../lib/daily.ts';
+  import { submit } from '../lib/leaderboard.ts';
   import { classicGrid, simpleGrid } from '../lib/share.ts';
   import { gameKey, getGame, recordWin, saveGame, type GameState } from '../lib/storage.ts';
   import type { Monster } from '../lib/types.ts';
@@ -59,6 +60,7 @@
       game.done = true;
       recordWin(key, game.guesses.length, game.day);
       app.refreshStreak();
+      if (daily && game.day !== null) submit({ day: game.day, mode, tier, guesses: [...game.guesses] });
     }
     saveGame(key, $state.snapshot(game));
   }
