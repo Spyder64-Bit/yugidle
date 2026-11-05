@@ -1,6 +1,6 @@
 # Privacy policy
 
-_Last updated: 2026-11-04_
+_Last updated: 2026-11-05_
 
 Yugidle is designed to collect **nothing** about you.
 
@@ -16,6 +16,10 @@ Yugidle is designed to collect **nothing** about you.
 Your settings (language, mode, difficulty), current games and statistics are saved in your own browser's `localStorage`. They never leave your device and are never sent to us. Clearing your browser's site data deletes them completely.
 
 When you press **Share**, the result text is copied to your clipboard or handed to your device's share sheet. Nothing is sent anywhere unless you choose to paste or send it.
+
+## External links
+
+The footer links to GitHub and to [Ko-fi](https://ko-fi.com/spyder64). These are plain links: nothing is loaded from those sites until you click one, and once you're there their own privacy policies apply.
 
 ## Hosting
 

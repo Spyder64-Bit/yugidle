@@ -15,7 +15,7 @@ Yugidle is an **unofficial, non-commercial fan project**. It is not affiliated w
 
 ## Ground rules this project follows
 
-- **No money involved.** No ads, no paid features, no donations tied to Konami content.
+- **No money from Konami content.** No ads, no paid features, nothing locked behind payment. The game is free for everyone. A voluntary [Ko-fi](https://ko-fi.com/spyder64) tip jar supports the developer's time and the open-source code. Tips never buy, unlock or license any Yu-Gi-Oh! content.
 - **No hotlinking.** Card images are mirrored once and served from our own hosting, as the YGOPRODeck API guide asks.
 - **Attribution.** The site and this repository credit Konami as the rights holder and YGOPRODeck as the data source.
 
