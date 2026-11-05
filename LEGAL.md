@@ -10,6 +10,7 @@ Yugidle is an **unofficial, non-commercial fan project**. It is not affiliated w
 | Yu-Gi-Oh! card names, card texts, card artwork, game terms | © Konami / Kazuki Takahashi | **Not licensed by this project.** Used for non-commercial fan purposes only. |
 | Card database (`public/data/`) and artwork thumbnails (`public/thumbs/`, `public/bg/`) | Derived from [YGOPRODeck](https://ygoprodeck.com/api-guide/); underlying content © Konami | **Not covered by the MIT license.** |
 | Yugidle logo and icons (`assets/brand/`, `public/brand/`, `public/favicon.ico`) | The Yugidle project | All rights reserved. Not covered by the MIT license. |
+| Flag icons (language picker) | [flag-icons](https://github.com/lipis/flag-icons) contributors | MIT |
 
 "Yu-Gi-Oh!" is a registered trademark of Konami. All trademarks belong to their respective owners and are mentioned only to identify the game this fan project is about.
 
