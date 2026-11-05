@@ -2,6 +2,7 @@
   import { untrack } from 'svelte';
   import { app } from '../lib/app.svelte.ts';
   import { compareMonsters } from '../lib/compare.ts';
+  import { SITE_URL } from '../lib/config.ts';
   import { dailyAnswer, randomAnswer } from '../lib/daily.ts';
   import { classicGrid, simpleGrid } from '../lib/share.ts';
   import { gameKey, getGame, recordWin, saveGame, type GameState } from '../lib/storage.ts';
@@ -87,7 +88,7 @@
       mode === 'classic'
         ? classicGrid(guessed.map((g) => compareMonsters(g, answer)))
         : simpleGrid(n);
-    return `${title}\n${count}\n${grid}\n${location.origin}`;
+    return `${title}\n${count}\n${grid}\n${SITE_URL}`;
   }
 
   const wrongList = $derived([...guessed].reverse().filter((m: Monster) => m.id !== game.answer));
