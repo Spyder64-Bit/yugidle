@@ -6,7 +6,7 @@
   import HelpModal from './components/HelpModal.svelte';
   import StatsModal from './components/StatsModal.svelte';
   import PrivacyModal from './components/PrivacyModal.svelte';
-  import { REPO_URL } from './lib/config.ts';
+  import { KOFI_URL, REPO_URL } from './lib/config.ts';
 
   let modal = $state<'help' | 'stats' | 'privacy' | null>(null);
 
@@ -42,6 +42,7 @@
     <p class="links">
       <a href={REPO_URL} target="_blank" rel="noopener">{app.t('footer.source')}</a>
       <button class="link" onclick={() => (modal = 'privacy')}>{app.t('footer.privacy')}</button>
+      <a href={KOFI_URL} target="_blank" rel="noopener">{app.t('footer.kofi')}</a>
     </p>
   </footer>
 </div>
@@ -107,7 +108,8 @@
   }
   .links {
     display: flex;
-    gap: 18px;
+    flex-wrap: wrap;
+    gap: 6px 18px;
     justify-content: center;
   }
   .links a,
