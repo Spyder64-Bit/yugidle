@@ -1,10 +1,11 @@
 /**
  * GET /api/leaderboard?board=today|avg|total|streak[&mode=&tier=]
- *   → { rows: [{ rank, nick, tag, value, solved? }] }   (public, cached at the edge for 60 s)
+ *   → { rows: [{ rank, nick, tag, value, solved? }] }   (public, cached at the edge for 30 s)
  * GET /api/leaderboard?...&me=1 with `Authorization: Bearer <key>`
  *   → { me: { rank, value, solved? } | null }          (the caller's own position, not cached)
  *
- * Ranks are competition ranks on the value: equal values share a rank.
+ * Ranks are competition ranks on the value (equal values share a rank), except on Today, where
+ * ties are broken by solve time.
  */
 import { authPlayer, fail, json, loadSchedule, tagOf, todayOf, type Env } from '../../server/common.ts';
 import { AVG_MIN_SOLVES, BOARD_SIZE, isBoard, isMode, isTier, type Board } from '../../src/lib/leaderboard-rules.ts';
@@ -33,8 +34,12 @@ function sql(q: Query) {
            WHERE r.day = ?1 AND r.mode = ?2 AND r.tier = ?3 ORDER BY r.guesses, r.ts LIMIT ${BOARD_SIZE}`,
           [q.today, q.mode, q.tier],
         ],
-        mine: [`SELECT guesses AS value FROM results WHERE player = ?4 AND day = ?1 AND mode = ?2 AND tier = ?3`, [q.today, q.mode, q.tier]],
-        better: [`SELECT COUNT(*) AS n FROM results WHERE day = ?1 AND mode = ?2 AND tier = ?3 AND guesses < ?4`, [q.today, q.mode, q.tier]],
+        mine: [`SELECT guesses AS value, ts FROM results WHERE player = ?4 AND day = ?1 AND mode = ?2 AND tier = ?3`, [q.today, q.mode, q.tier]],
+        // Ties are broken by time: whoever solved it first ranks higher.
+        better: [
+          `SELECT COUNT(*) AS n FROM results WHERE day = ?1 AND mode = ?2 AND tier = ?3 AND (guesses < ?4 OR (guesses = ?4 AND ts < ?5))`,
+          [q.today, q.mode, q.tier],
+        ],
       };
     case 'avg': {
       const avg = 'CAST(total_guesses AS REAL) / solved';
@@ -73,10 +78,11 @@ function sql(q: Query) {
 /** Lower is better for guess counts, higher for totals and streaks. */
 const ascending = (b: Board) => b === 'today' || b === 'avg';
 
-function ranked(rows: Row[], asc: boolean) {
+function ranked(rows: Row[], board: Board) {
+  const asc = ascending(board);
   let rank = 0;
   return rows.map((r, i) => {
-    if (i === 0 || r.value !== rows[i - 1].value) rank = i + 1;
+    if (board === 'today' || i === 0 || r.value !== rows[i - 1].value) rank = i + 1;
     return { rank, nick: r.nick, tag: tagOf(r.id), value: asc ? round(r.value) : r.value, solved: r.solved };
   });
 }
@@ -100,13 +106,13 @@ export const onRequestGet: PagesFunction<Env> = async ({ request, env, waitUntil
     const [mineSql, mineArgs] = s.mine as [string, unknown[]];
     const mine = await env.DB.prepare(mineSql)
       .bind(...mineArgs, me.id)
-      .first<{ value: number; solved?: number }>();
+      .first<{ value: number; solved?: number; ts?: number }>();
     if (!mine || (board === 'avg' && (mine.solved ?? 0) < AVG_MIN_SOLVES)) {
       return json({ me: mine ? { rank: null, value: round(mine.value), solved: mine.solved } : null });
     }
     const [betterSql, betterArgs] = s.better as [string, unknown[]];
     const better = await env.DB.prepare(betterSql)
-      .bind(...betterArgs, mine.value)
+      .bind(...betterArgs, mine.value, ...(board === 'today' ? [mine.ts] : []))
       .first<{ n: number }>();
     return json({ me: { rank: (better?.n ?? 0) + 1, value: round(mine.value), solved: mine.solved } });
   }
@@ -121,8 +127,8 @@ export const onRequestGet: PagesFunction<Env> = async ({ request, env, waitUntil
   const { results } = await env.DB.prepare(topSql)
     .bind(...topArgs)
     .all<Row>();
-  const res = json({ board, mode, tier, day: q.today, rows: ranked(results, ascending(board)) }, 200, {
-    'Cache-Control': 'public, max-age=60',
+  const res = json({ board, mode, tier, day: q.today, rows: ranked(results, board) }, 200, {
+    'Cache-Control': 'public, max-age=30',
   });
   waitUntil(cache.put(cacheKey, res.clone()));
   return res;
