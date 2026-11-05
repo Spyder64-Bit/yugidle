@@ -3,7 +3,11 @@
   import { MODES, TIERS } from '../lib/types.ts';
   import LangPicker from './LangPicker.svelte';
 
-  let { onhelp, onstats }: { onhelp: () => void; onstats: () => void } = $props();
+  let {
+    onhelp,
+    onstats,
+    onleaderboard,
+  }: { onhelp: () => void; onstats: () => void; onleaderboard: () => void } = $props();
 
   // Each mode wears a card-frame colour: Effect orange, Fusion violet, Spell teal.
   const MODE_COLOR = { classic: 'var(--f-effect)', artwork: 'var(--f-fusion)', text: 'var(--f-spell)' } as const;
@@ -13,7 +17,10 @@
 
 <header>
   <div class="top">
-    <button class="icon" onclick={onhelp} aria-label={app.t('btn.help')} title={app.t('btn.help')}>?</button>
+    <div class="left">
+      <button class="icon" onclick={onhelp} aria-label={app.t('btn.help')} title={app.t('btn.help')}>?</button>
+      <button class="icon" onclick={onleaderboard} aria-label={app.t('btn.leaderboard')} title={app.t('btn.leaderboard')}>🏆</button>
+    </div>
     <h1><img class="logo" src="/brand/logo.webp" alt="Yugidle" width="480" height="189" /></h1>
     <div class="right">
       {#if app.streak > 0}
@@ -84,6 +91,11 @@
     width: 100%;
     display: grid;
     grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+  }
+  .left {
+    display: flex;
+    gap: 8px;
     align-items: center;
   }
   .right {
@@ -221,8 +233,30 @@
       padding: 0 7px;
       font-size: 0.85rem;
     }
+    .left,
     .right {
       gap: 6px;
+    }
+    /* Phones: logo on its own row, buttons below it on both sides. */
+    .top {
+      grid-template-columns: 1fr 1fr;
+      grid-template-areas:
+        'logo logo'
+        'left right';
+      row-gap: 4px;
+    }
+    h1 {
+      grid-area: logo;
+      justify-self: center;
+    }
+    .left {
+      grid-area: left;
+    }
+    .right {
+      grid-area: right;
+    }
+    .logo {
+      width: min(300px, 78vw);
     }
   }
 </style>

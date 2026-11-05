@@ -1,4 +1,5 @@
 import { decodeBackup, encodeBackup } from './backup.ts';
+import type { ResultInput } from './leaderboard-rules.ts';
 import { advanceStreak, seedStreak, type DayStreak } from './streak.ts';
 import { LANGS, type Lang, type Mode, type TierName } from './types.ts';
 
@@ -49,6 +50,16 @@ interface Saved {
   settings: Settings;
   /** Global daily streak across all modes and difficulties (added in v0.3.0). */
   daily?: DayStreak;
+  /** Leaderboard identity, only after the player opted in (v0.3.0). The token is secret. */
+  player?: LbPlayer;
+  /** Daily results that could not be sent yet (offline). */
+  pending?: ResultInput[];
+}
+
+export interface LbPlayer {
+  token: string;
+  nick: string;
+  tag: string;
 }
 
 const KEY = 'yugidle:v1';
@@ -160,4 +171,29 @@ export function importBackup(code: string): boolean {
   } catch {
     return false;
   }
+}
+
+export const getPlayer = (): LbPlayer | undefined => (saved.player ? { ...saved.player } : undefined);
+export function setPlayer(p: LbPlayer | undefined) {
+  saved.player = p;
+  if (!p) saved.pending = [];
+  persist();
+}
+
+export const getPending = (): ResultInput[] => [...(saved.pending ?? [])];
+export function setPending(list: ResultInput[]) {
+  saved.pending = list.slice(-20);
+  persist();
+}
+
+/** Finished, solved daily games (any mode/tier) from `minDay` on, as leaderboard results. */
+export function solvedDailies(minDay: number): ResultInput[] {
+  const out: ResultInput[] = [];
+  for (const [key, g] of Object.entries(saved.games)) {
+    const [play, mode, tier] = key.split(':') as [Play, Mode, TierName];
+    if (play !== 'daily' || !g.done || g.gaveUp || g.day === null || g.day < minDay) continue;
+    if (g.guesses[g.guesses.length - 1] !== g.answer) continue;
+    out.push({ day: g.day, mode, tier, guesses: [...g.guesses] });
+  }
+  return out;
 }

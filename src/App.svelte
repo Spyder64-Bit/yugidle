@@ -5,10 +5,11 @@
   import MonsterWall from './components/MonsterWall.svelte';
   import HelpModal from './components/HelpModal.svelte';
   import StatsModal from './components/StatsModal.svelte';
+  import LeaderboardModal from './components/LeaderboardModal.svelte';
   import PrivacyModal from './components/PrivacyModal.svelte';
   import { KOFI_URL, REPO_URL } from './lib/config.ts';
 
-  let modal = $state<'help' | 'stats' | 'privacy' | null>(null);
+  let modal = $state<'help' | 'stats' | 'leaderboard' | 'privacy' | null>(null);
 
   app.init().then(() => {
     if (!app.settings.seenHelp) {
@@ -23,7 +24,11 @@
 <MonsterWall />
 
 <div class="page">
-  <Header onhelp={() => (modal = 'help')} onstats={() => (modal = 'stats')} />
+  <Header
+    onhelp={() => (modal = 'help')}
+    onstats={() => (modal = 'stats')}
+    onleaderboard={() => (modal = 'leaderboard')}
+  />
 
   <main>
     {#if app.status === 'loading'}
@@ -51,6 +56,8 @@
   <HelpModal onclose={() => (modal = null)} />
 {:else if modal === 'stats'}
   <StatsModal onclose={() => (modal = null)} />
+{:else if modal === 'leaderboard'}
+  <LeaderboardModal onclose={() => (modal = null)} />
 {:else if modal === 'privacy'}
   <PrivacyModal onclose={() => (modal = null)} />
 {/if}

@@ -1,5 +1,6 @@
 import { dayIndex } from './daily.ts';
 import { loadMonsters, loadNames, loadSchedule } from './data.ts';
+import { flushPending } from './leaderboard.ts';
 import { TERMS, translate, type Key } from './i18n/index.ts';
 import { SearchIndex } from './search.ts';
 import { getDayStreak, getSettings, saveSettings, type Settings } from './storage.ts';
@@ -58,6 +59,7 @@ class AppState {
       this.localNames = names;
       document.documentElement.lang = this.settings.lang;
       this.status = 'ready';
+      flushPending();
     } catch (e) {
       console.error(e);
       this.status = 'error';

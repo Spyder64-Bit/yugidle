@@ -25,6 +25,9 @@ function localArt(): Plugin {
 
 export default defineConfig({
   plugins: [svelte(), localArt()],
+  // The leaderboard API runs in Pages Functions: start `npx wrangler pages dev public --port 8788`
+  // next to `npm run dev` to use it locally.
+  server: { proxy: { '/api': 'http://127.0.0.1:8788' } },
   test: {
     include: ['tests/**/*.test.ts'],
   },
