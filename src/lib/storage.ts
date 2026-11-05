@@ -60,17 +60,13 @@ export const emptyStats = (): Stats => ({
   dist: BUCKETS.map(() => 0),
 });
 
-function detectLang(): Lang {
-  const nav = (globalThis.navigator?.language ?? 'en').slice(0, 2) as Lang;
-  return LANGS.includes(nav) ? nav : 'en';
-}
-
 const defaults = (): Saved => ({
   v: 1,
   games: {},
   stats: {},
   settings: {
-    lang: detectLang(),
+    // English by default; visitors switch with the flag picker (the choice is remembered).
+    lang: 'en',
     mode: 'classic',
     tier: 'easy',
     play: 'daily',
@@ -85,7 +81,9 @@ function load(): Saved {
     if (!raw) return defaults();
     const s = JSON.parse(raw) as Saved;
     if (s.v !== 1) return defaults();
-    return { ...defaults(), ...s, settings: { ...defaults().settings, ...s.settings } };
+    const settings = { ...defaults().settings, ...s.settings };
+    if (!LANGS.includes(settings.lang)) settings.lang = 'en';
+    return { ...defaults(), ...s, settings };
   } catch {
     return defaults();
   }
