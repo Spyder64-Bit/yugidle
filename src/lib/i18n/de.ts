@@ -102,6 +102,18 @@ export const de: Dict = {
   'kind.level': 'Stufe',
   'kind.rank': 'Rang',
   'kind.link': 'Link',
+
+  'streak.badge': '{n} Tage in Folge',
+  'stats.dayStreak': 'Tagesserie',
+  'stats.dayStreakHelp': 'Tage in Folge mit mindestens einem gelösten Tagesrätsel, in jedem Modus',
+  'backup.title': 'Sicherung',
+  'backup.help': 'Dein Fortschritt wird nur in diesem Browser gespeichert. Kopiere den Sicherungscode, um ihn auf ein anderes Gerät zu übertragen oder später wiederherzustellen. Halte ihn privat.',
+  'backup.copy': 'Sicherungscode kopieren',
+  'backup.copied': 'Code kopiert!',
+  'backup.placeholder': 'Sicherungscode einfügen…',
+  'backup.restore': 'Wiederherstellen',
+  'backup.confirm': 'Das ersetzt den gesamten in diesem Browser gespeicherten Fortschritt. Fortfahren?',
+  'backup.invalid': 'Dieser Sicherungscode ist ungültig.',
 };
 
 export const deTerms: Terms = {

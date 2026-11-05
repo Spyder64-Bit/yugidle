@@ -102,6 +102,18 @@ export const pt: Dict = {
   'kind.level': 'Nível',
   'kind.rank': 'Classe',
   'kind.link': 'Link',
+
+  'streak.badge': 'Sequência de {n} dias',
+  'stats.dayStreak': 'Sequência diária',
+  'stats.dayStreakHelp': 'Dias seguidos com pelo menos um desafio diário resolvido, em qualquer modo',
+  'backup.title': 'Backup',
+  'backup.help': 'Seu progresso fica salvo só neste navegador. Copie o código de backup para levá-lo a outro dispositivo ou restaurá-lo depois. Mantenha-o privado.',
+  'backup.copy': 'Copiar código de backup',
+  'backup.copied': 'Código copiado!',
+  'backup.placeholder': 'Cole um código de backup…',
+  'backup.restore': 'Restaurar',
+  'backup.confirm': 'Isso substitui todo o progresso salvo neste navegador. Continuar?',
+  'backup.invalid': 'Esse código de backup não é válido.',
 };
 
 export const ptTerms: Terms = {

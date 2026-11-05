@@ -101,6 +101,18 @@ export const en = {
   'kind.level': 'Level',
   'kind.rank': 'Rank',
   'kind.link': 'Link',
+
+  'streak.badge': '{n}-day streak',
+  'stats.dayStreak': 'Daily streak',
+  'stats.dayStreakHelp': 'Days in a row with at least one daily puzzle solved, in any mode',
+  'backup.title': 'Backup',
+  'backup.help': 'Your progress is saved only in this browser. Copy the backup code to move it to another device or restore it later. Keep it private.',
+  'backup.copy': 'Copy backup code',
+  'backup.copied': 'Code copied!',
+  'backup.placeholder': 'Paste a backup code…',
+  'backup.restore': 'Restore',
+  'backup.confirm': 'This replaces all the progress saved in this browser. Continue?',
+  'backup.invalid': 'That isn\'t a valid backup code.',
 };
 
 export type Dict = Record<keyof typeof en, string>;

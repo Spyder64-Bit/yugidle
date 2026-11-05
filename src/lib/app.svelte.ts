@@ -2,7 +2,8 @@ import { dayIndex } from './daily.ts';
 import { loadMonsters, loadNames, loadSchedule } from './data.ts';
 import { TERMS, translate, type Key } from './i18n/index.ts';
 import { SearchIndex } from './search.ts';
-import { getSettings, saveSettings, type Settings } from './storage.ts';
+import { getDayStreak, getSettings, saveSettings, type Settings } from './storage.ts';
+import { liveStreak } from './streak.ts';
 import type { Lang, Monster, Schedule } from './types.ts';
 
 class AppState {
@@ -12,10 +13,13 @@ class AppState {
   schedule = $state.raw<Schedule | null>(null);
   localNames = $state.raw<Record<number, string>>({});
   now = $state(Date.now());
+  dayStreak = $state(getDayStreak());
 
   byId = $derived(new Map(this.monsters.map((m) => [m.id, m])));
   today = $derived(this.schedule ? dayIndex(this.schedule.epoch, this.now) : 0);
   terms = $derived(TERMS[this.settings.lang]);
+  /** Current global daily streak (0 if broken). */
+  streak = $derived(liveStreak(this.dayStreak, this.today));
   index = $derived(new SearchIndex(this.monsters, (m) => this.name(m)));
 
   t = (key: Key, params?: Record<string, string | number>) =>
@@ -26,6 +30,10 @@ class AppState {
   update(patch: Partial<Settings>) {
     Object.assign(this.settings, patch);
     saveSettings($state.snapshot(this.settings));
+  }
+
+  refreshStreak() {
+    this.dayStreak = getDayStreak();
   }
 
   async setLang(lang: Lang) {

@@ -1,3 +1,5 @@
+import { decodeBackup, encodeBackup } from './backup.ts';
+import { advanceStreak, seedStreak, type DayStreak } from './streak.ts';
 import { LANGS, type Lang, type Mode, type TierName } from './types.ts';
 
 export type Play = 'daily' | 'unlimited';
@@ -45,6 +47,8 @@ interface Saved {
   games: Record<string, GameState>;
   stats: Record<string, Stats>;
   settings: Settings;
+  /** Global daily streak across all modes and difficulties (added in v0.3.0). */
+  daily?: DayStreak;
 }
 
 const KEY = 'yugidle:v1';
@@ -83,7 +87,10 @@ function load(): Saved {
     if (s.v !== 1) return defaults();
     const settings = { ...defaults().settings, ...s.settings };
     if (!LANGS.includes(settings.lang)) settings.lang = 'en';
-    return { ...defaults(), ...s, settings };
+    const out: Saved = { ...defaults(), ...s, settings };
+    // Players from before v0.3.0: start the global streak from their per-mode daily streaks.
+    out.daily ??= seedStreak(Object.entries(out.stats).filter(([k]) => k.startsWith('daily:')).map(([, v]) => v));
+    return out;
   } catch {
     return defaults();
   }
@@ -123,6 +130,7 @@ export function recordWin(key: string, guesses: number, day: number | null): Sta
     s.streak = s.lastDay === day - 1 ? s.streak + 1 : 1;
     s.maxStreak = Math.max(s.maxStreak, s.streak);
     s.lastDay = day;
+    saved.daily = advanceStreak(saved.daily ?? seedStreak([]), day);
   }
   saved.stats[key] = s;
   persist();
@@ -132,4 +140,24 @@ export function recordWin(key: string, guesses: number, day: number | null): Sta
 /** Streak to display today: a streak is broken if yesterday's puzzle wasn't solved. */
 export function currentStreak(s: Stats, today: number): number {
   return s.lastDay >= today - 1 ? s.streak : 0;
+}
+
+export const getDayStreak = (): DayStreak => ({ ...(saved.daily ?? seedStreak([])) });
+
+/** The whole saved state as a backup code (see backup.ts). */
+export const exportBackup = (): string => encodeBackup(saved);
+
+/**
+ * Restores a backup code, replacing everything saved in this browser. Returns false if the code
+ * is invalid. The caller should reload the page so every component picks the new state up.
+ */
+export function importBackup(code: string): boolean {
+  const data = decodeBackup(code);
+  if (!data || data.v !== 1 || typeof data.settings !== 'object' || typeof data.stats !== 'object') return false;
+  try {
+    localStorage.setItem(KEY, JSON.stringify(data));
+    return true;
+  } catch {
+    return false;
+  }
 }
