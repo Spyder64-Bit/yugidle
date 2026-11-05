@@ -4,7 +4,7 @@
   import Modal from './Modal.svelte';
 
   let { onclose }: { onclose: () => void } = $props();
-  const PARAGRAPHS = ['privacy.p1', 'privacy.p2', 'privacy.p3', 'privacy.p4', 'privacy.p5'] as const;
+  const PARAGRAPHS = ['privacy.p1', 'privacy.p2', 'privacy.p3', 'privacy.p4', 'privacy.p5', 'privacy.p6'] as const;
 </script>
 
 <Modal title={app.t('privacy.title')} {onclose}>
