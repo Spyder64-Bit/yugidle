@@ -1,7 +1,7 @@
 <script lang="ts">
   import { app } from '../lib/app.svelte.ts';
-  import { LANG_LABELS } from '../lib/i18n/index.ts';
-  import { LANGS, MODES, TIERS, type Lang } from '../lib/types.ts';
+  import { MODES, TIERS } from '../lib/types.ts';
+  import LangPicker from './LangPicker.svelte';
 
   let { onhelp, onstats }: { onhelp: () => void; onstats: () => void } = $props();
 
@@ -17,16 +17,7 @@
     <h1><img class="logo" src="/brand/logo.webp" alt="Yugidle" width="480" height="189" /></h1>
     <div class="right">
       <button class="icon" onclick={onstats} aria-label={app.t('btn.stats')} title={app.t('btn.stats')}>📊</button>
-      <select
-        class="icon lang"
-        aria-label={app.t('lang')}
-        value={app.settings.lang}
-        onchange={(e) => app.setLang(e.currentTarget.value as Lang)}
-      >
-        {#each LANGS as l (l)}
-          <option value={l} title={LANG_LABELS[l]}>{l.toUpperCase()}</option>
-        {/each}
-      </select>
+      <LangPicker />
     </div>
   </div>
 
@@ -110,13 +101,6 @@
     }
   }
 
-  .lang {
-    width: auto;
-    padding: 0 6px;
-    font-size: 0.8rem;
-    appearance: none;
-    text-align: center;
-  }
 
   .modes {
     display: flex;
