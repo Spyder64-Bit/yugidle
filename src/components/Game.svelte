@@ -58,6 +58,7 @@
     if (id === game.answer) {
       game.done = true;
       recordWin(key, game.guesses.length, game.day);
+      app.refreshStreak();
     }
     saveGame(key, $state.snapshot(game));
   }

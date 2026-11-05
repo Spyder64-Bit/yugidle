@@ -1,6 +1,6 @@
 <script lang="ts">
   import { app } from '../lib/app.svelte.ts';
-  import { BUCKETS, currentStreak, gameKey, getStats } from '../lib/storage.ts';
+  import { BUCKETS, currentStreak, exportBackup, gameKey, getStats, importBackup } from '../lib/storage.ts';
   import Modal from './Modal.svelte';
 
   let { onclose }: { onclose: () => void } = $props();
@@ -9,9 +9,38 @@
   const s = getStats(gameKey('daily', mode, tier));
   const max = Math.max(1, ...s.dist);
   const avg = s.wins ? (s.totalGuesses / s.wins).toFixed(1) : '–';
+
+  let copied = $state(false);
+  let code = $state('');
+  let invalid = $state(false);
+
+  async function copyBackup() {
+    try {
+      await navigator.clipboard.writeText(exportBackup());
+      copied = true;
+      setTimeout(() => (copied = false), 2000);
+    } catch {
+      code = exportBackup(); // clipboard blocked: show the code so it can be copied by hand
+    }
+  }
+
+  function restore() {
+    invalid = false;
+    if (!code.trim() || !confirm(app.t('backup.confirm'))) return;
+    if (importBackup(code)) location.reload();
+    else invalid = true;
+  }
 </script>
 
 <Modal title={app.t('stats.title')} {onclose}>
+  <div class="day">
+    <span class="flame" aria-hidden="true">🔥</span>
+    <div>
+      <strong>{app.streak}</strong>
+      <span class="label">{app.t('stats.dayStreak')}</span>
+      <span class="sub">{app.t('stats.dayStreakHelp')} · {app.t('stats.maxStreak')}: {app.dayStreak.maxStreak}</span>
+    </div>
+  </div>
   <p class="scope">
     {app.t('stats.scope', { mode: app.t(`mode.${mode}`), tier: app.t(`tier.${tier}`) })}
   </p>
@@ -28,9 +57,86 @@
       <span class="bar" style:width="{Math.max(6, (s.dist[i] / max) * 100)}%">{s.dist[i]}</span>
     {/each}
   </div>
+
+  <h3>{app.t('backup.title')}</h3>
+  <p class="help">{app.t('backup.help')}</p>
+  <div class="backup">
+    <button class="btn" onclick={copyBackup}>{copied ? app.t('backup.copied') : app.t('backup.copy')}</button>
+    <input
+      bind:value={code}
+      placeholder={app.t('backup.placeholder')}
+      aria-label={app.t('backup.placeholder')}
+      spellcheck="false"
+      autocomplete="off"
+    />
+    <button class="btn" onclick={restore} disabled={!code.trim()}>{app.t('backup.restore')}</button>
+  </div>
+  {#if invalid}<p class="err" role="alert">{app.t('backup.invalid')}</p>{/if}
 </Modal>
 
 <style>
+  .day {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 12px 16px;
+    margin-bottom: 18px;
+    border: 3px solid var(--ink);
+    border-radius: 16px;
+    background: var(--panel-2);
+    box-shadow: var(--pop);
+  }
+  .flame {
+    font-size: 2.4rem;
+    line-height: 1;
+  }
+  .day div {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    column-gap: 10px;
+    align-items: baseline;
+  }
+  .day strong {
+    color: var(--f-effect);
+    text-shadow: 2px 2px 0 var(--ink);
+  }
+  .label {
+    font-weight: 900;
+  }
+  .sub {
+    grid-column: 1 / -1;
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: var(--muted);
+  }
+  .help {
+    margin: 0 0 10px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--muted);
+  }
+  .backup {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .backup input {
+    flex: 1 1 160px;
+    min-width: 0;
+    padding: 8px 12px;
+    border-radius: 12px;
+    border: 3px solid var(--ink);
+    background: var(--ink);
+    color: var(--text);
+    font: inherit;
+    font-size: 0.85rem;
+  }
+  .err {
+    margin: 8px 0 0;
+    color: var(--miss);
+    font-weight: 800;
+    font-size: 0.85rem;
+  }
   .scope {
     margin: -6px 0 16px;
     color: var(--muted);

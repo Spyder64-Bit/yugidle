@@ -102,6 +102,18 @@ export const it: Dict = {
   'kind.level': 'Livello',
   'kind.rank': 'Rango',
   'kind.link': 'Link',
+
+  'streak.badge': 'Serie di {n} giorni',
+  'stats.dayStreak': 'Serie giornaliera',
+  'stats.dayStreakHelp': 'Giorni di fila con almeno un puzzle giornaliero risolto, in qualsiasi modalità',
+  'backup.title': 'Backup',
+  'backup.help': 'I tuoi progressi sono salvati solo in questo browser. Copia il codice di backup per spostarli su un altro dispositivo o ripristinarli in seguito. Tienilo privato.',
+  'backup.copy': 'Copia codice di backup',
+  'backup.copied': 'Codice copiato!',
+  'backup.placeholder': 'Incolla un codice di backup…',
+  'backup.restore': 'Ripristina',
+  'backup.confirm': 'Questo sostituisce tutti i progressi salvati in questo browser. Continuare?',
+  'backup.invalid': 'Questo codice di backup non è valido.',
 };
 
 export const itTerms: Terms = {

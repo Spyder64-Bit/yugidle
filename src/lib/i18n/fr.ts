@@ -102,6 +102,18 @@ export const fr: Dict = {
   'kind.level': 'Niveau',
   'kind.rank': 'Rang',
   'kind.link': 'Lien',
+
+  'streak.badge': 'Série de {n} jours',
+  'stats.dayStreak': 'Série quotidienne',
+  'stats.dayStreakHelp': 'Jours d\'affilée avec au moins un puzzle du jour résolu, dans n\'importe quel mode',
+  'backup.title': 'Sauvegarde',
+  'backup.help': 'Votre progression est enregistrée uniquement dans ce navigateur. Copiez le code de sauvegarde pour la transférer sur un autre appareil ou la restaurer plus tard. Gardez-le privé.',
+  'backup.copy': 'Copier le code de sauvegarde',
+  'backup.copied': 'Code copié !',
+  'backup.placeholder': 'Collez un code de sauvegarde…',
+  'backup.restore': 'Restaurer',
+  'backup.confirm': 'Cela remplace toute la progression enregistrée dans ce navigateur. Continuer ?',
+  'backup.invalid': 'Ce code de sauvegarde n\'est pas valide.',
 };
 
 export const frTerms: Terms = {

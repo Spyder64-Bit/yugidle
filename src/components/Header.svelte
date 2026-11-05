@@ -16,6 +16,16 @@
     <button class="icon" onclick={onhelp} aria-label={app.t('btn.help')} title={app.t('btn.help')}>?</button>
     <h1><img class="logo" src="/brand/logo.webp" alt="Yugidle" width="480" height="189" /></h1>
     <div class="right">
+      {#if app.streak > 0}
+        <button
+          class="streak"
+          onclick={onstats}
+          aria-label={app.t('streak.badge', { n: app.streak })}
+          title={app.t('streak.badge', { n: app.streak })}
+        >
+          <span aria-hidden="true">🔥</span>{app.streak}
+        </button>
+      {/if}
       <button class="icon" onclick={onstats} aria-label={app.t('btn.stats')} title={app.t('btn.stats')}>📊</button>
       <LangPicker />
     </div>
@@ -81,6 +91,26 @@
     gap: 8px;
     justify-content: flex-end;
     align-items: center;
+  }
+
+  .streak {
+    height: 42px;
+    padding: 0 10px;
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+    border-radius: 12px;
+    border: 3px solid var(--ink);
+    background: var(--f-effect);
+    color: var(--ink);
+    font-family: var(--font-title);
+    font-size: 1rem;
+    box-shadow: var(--pop);
+    cursor: pointer;
+    font-variant-numeric: tabular-nums;
+  }
+  .streak span {
+    font-size: 1.05rem;
   }
 
   h1 {
@@ -185,6 +215,14 @@
     .icon {
       width: 36px;
       height: 36px;
+    }
+    .streak {
+      height: 36px;
+      padding: 0 7px;
+      font-size: 0.85rem;
+    }
+    .right {
+      gap: 6px;
     }
   }
 </style>
