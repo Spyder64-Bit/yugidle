@@ -3,6 +3,20 @@
 All notable changes to this project are documented here.
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the project uses [Semantic Versioning](https://semver.org/).
 
+## [0.3.0] - 2026-11-05
+
+### Added
+- **Daily streak:** days in a row with at least one daily puzzle solved, in any mode or difficulty. Shown as a 🔥 badge in the header and in Statistics. Existing players start from their best current per-mode streak.
+- **Global leaderboard (opt-in):** 🏆 button with four boards: *Today* (fewest guesses on today's puzzle, ties to the earliest solve) and *Average* (min. 5 solves) per mode and difficulty, plus *Total solved* and *Streak*. Joining needs only a nickname (no account or email); results are checked on the server against the day's answer, count once per puzzle, and are retried when offline. Players can rename themselves or leave and delete their data. Runs on Cloudflare D1 + Pages Functions, still $0.
+- **Backup codes:** Statistics → Backup copies all progress as a code to paste on another device or after clearing the browser.
+- **Flag language picker** (bundled flag-icons SVGs).
+
+### Changed
+- New visitors start in **English** instead of the browser language (a saved choice is kept).
+- On phones the header puts the logo on its own row, so every button fits down to 320 px wide.
+- Privacy policy and in-app privacy notice cover the optional leaderboard and backup codes.
+- `npm run check` now also type-checks the Pages Functions.
+
 ## [0.2.0] - 2026-11-05
 
 Public launch on Cloudflare Pages.
@@ -33,5 +47,6 @@ First public version.
 - **Data pipeline:** YGOPRODeck import, append-only daily schedule, artwork mirrored once (thumbnails as static files, full art on Cloudflare R2), weekly refresh via GitHub Actions. Cards without artwork stay guess-only until art is available.
 - **Open source:** MIT license for the code, plus legal notice and privacy policy.
 
+[0.3.0]: https://github.com/Spyder64-Bit/yugidle/releases/tag/v0.3.0
 [0.2.0]: https://github.com/Spyder64-Bit/yugidle/releases/tag/v0.2.0
 [0.1.0]: https://github.com/Spyder64-Bit/yugidle/releases/tag/v0.1.0

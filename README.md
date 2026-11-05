@@ -12,6 +12,8 @@ A free, open-source daily Yu-Gi-Oh! monster guessing game in the style of Wordle
 
 Each mode has Easy, Normal and Hard difficulties, played either as the daily puzzle (resets at midnight UTC) or in Unlimited mode. The UI is in EN/IT/FR/DE/PT. The site is fully static: stats live in `localStorage`.
 
+A daily streak counts the days in a row with at least one daily puzzle solved, and an **optional global leaderboard** (Today, Average, Total, Streak) needs only a nickname. Backup codes move your progress between devices without an account.
+
 Unofficial, non-commercial fan project, not affiliated with or endorsed by Konami. Card data and images come from [YGOPRODeck](https://ygoprodeck.com/api-guide/). No accounts, no ads, no cookies, no tracking.
 
 ## Development
@@ -24,7 +26,14 @@ npm run bg                     # rebuild the background monster wall (public/bg/
 npm run brand                  # rebuild logo/favicons from assets/brand/
 npm run dev                    # http://localhost:5173
 npm test                       # unit tests
-npm run check                  # type-check
+npm run check                  # type-check (app, scripts and Pages Functions)
+```
+
+The leaderboard API runs as Pages Functions (`functions/api/`, helpers in `server/`, rules shared with the app in `src/lib/leaderboard-rules.ts`). To use it in dev, run it next to `npm run dev` (Vite proxies `/api` to it):
+
+```sh
+npx wrangler d1 migrations apply yugidle --local   # once: create the local database
+npx wrangler pages dev public --port 8788
 ```
 
 `npm run data -- --cached` reuses the API responses saved in `.cache/api` (works offline).
@@ -56,7 +65,20 @@ Hosting is Cloudflare Pages (site + one Pages Function) and Cloudflare R2 (full 
 6. **Pages project:** dashboard → Workers & Pages → Create → Pages → *Connect to Git* → this repo. Framework *None*, build command `npm run build`, output `dist`, environment variable `NODE_VERSION=24`. Every push to `main` (including the bot's weekly data commit) deploys automatically. `wrangler.toml` binds the bucket as `IMAGES` for `functions/img/[[path]].ts`, which serves `/img/art/*`; if the binding is missing, add it under Settings → Bindings.
 7. **Local production preview:** `npm run build && npx wrangler pages dev dist`.
 
+8. **Leaderboard database:** `npx wrangler d1 create yugidle`, put its ID in `wrangler.toml`, then `npx wrangler d1 migrations apply yugidle --remote`. Set the anti-spam salt with `openssl rand -hex 32 | npx wrangler pages secret put IP_SALT --project-name yugidle-game`.
+
 `public/_headers` sets the CSP and cache rules. If you deploy under a different address, change `SITE_URL` in `src/lib/config.ts` and the URLs in `index.html`.
+
+## Moderating the leaderboard
+
+```sh
+# Newest players
+npx wrangler d1 execute yugidle --remote --command "SELECT id, nick, created FROM players ORDER BY created DESC LIMIT 50"
+# Remove a player and all their results (replace ID)
+npx wrangler d1 execute yugidle --remote --command "DELETE FROM results WHERE player='ID'; DELETE FROM mode_stats WHERE player='ID'; DELETE FROM players WHERE id='ID'"
+```
+
+Blocked nickname words live in `src/lib/leaderboard-rules.ts`.
 
 ## Support
 
